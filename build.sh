@@ -1,1 +1,1 @@
-gcc main.c -lraylib -o game && ./game && rm ./game
+gcc main.c -lraylib -lm -o game && ./game && rm ./game

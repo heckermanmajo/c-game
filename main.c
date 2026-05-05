@@ -1,5 +1,11 @@
 /*
  TODO-LIST:
+
+ Logistik-System für kraft investment basierend auf cities
+ Das macht das AI-erstellen sehr viel einfacher.
+ Zudem wenn die ai logistik center mit armeen bauen kann.
+
+
 - move army and trigger correct overlay
 - add log file to camp so we can file log into camp file
 - ui should consume the mouse if clicked on
@@ -25,6 +31,7 @@
 #include <stdio.h>
 #include <raylib.h>
 
+#include "src/lib/text_button.h"
 
 #include "src/types.h"
 
@@ -36,13 +43,14 @@
 #include "src/camp/draw_ui.h"
 #include "src/camp/draw_overlay.h"
 #include "src/camp/user_input_controller.h"
-#include "src/camp/auto_battle_resolve_logic.h"
+#include "src/camp/get_distance_between_tiles.h"
 
 
 #define IMPLEMENTATION
 #include "src/camp/get_camp_tiles_around.h"
 #include "src/camp/move_army.h"
-#include "src/camp/auto_battle_resolve_logic.h"
+#include "src/camp/progress_to_next_round.h"
+#include "src/camp/get_distance_between_tiles.h"
 #undef IMPLEMENTATION
 
 

@@ -70,8 +70,9 @@ void camp__draw_world(Game *game)
                     int center_x = tile->x_world + CAMP_TILE_SIZE_IN_PIXELS / 2 - 4;
                     int center_y = tile->y_world + CAMP_TILE_SIZE_IN_PIXELS / 2 - 4;
                     Color brown = BROWN;
-                    brown.b = 100;
-                    brown.g = 100;
+                    //
+                    //brown.b = 100;
+                    //brown.g = 100;
                     DrawCircle(
                         center_x,
                         center_y,
@@ -89,6 +90,30 @@ void camp__draw_world(Game *game)
                         GRAY
                     );
                     break;
+
+                case CAMP_TERRAIN_TYPE_LOGISTICS_HUB:
+                {
+                    DrawRectangle(
+                        tile->x_world,
+                        tile->y_world,
+                        (int) CAMP_TILE_SIZE_IN_PIXELS - 4,
+                        (int) CAMP_TILE_SIZE_IN_PIXELS - 4,
+                        GREEN
+                    );
+                    DrawText("HUB", tile->x_world + 10, tile->y_world + 10, 10, BLACK);
+                    int center_x = tile->x_world + CAMP_TILE_SIZE_IN_PIXELS / 2 - 4;
+                    int center_y = tile->y_world + CAMP_TILE_SIZE_IN_PIXELS / 2 - 4;
+                    Color red = DARKGREEN;
+                    red.b = 40;
+                    red.g = 40;
+                    DrawCircle(
+                        center_x,
+                        center_y,
+                        CAMP_TILE_SIZE_IN_PIXELS / 2 - 20,
+                        red
+                    );
+                }
+                break;
             }
 
             Color c = WHITE;
@@ -158,7 +183,7 @@ void camp__draw_world(Game *game)
                     if (tile->army.can_move_this_turn == 0)
                     {
                         Color gray = GRAY;
-                        gray.a = 90;
+                        gray.a = 130;
                         DrawTriangle(
                             (Vector2){
                                 .x = tile->x_world + CAMP_TILE_SIZE_IN_PIXELS / 2,
@@ -173,6 +198,21 @@ void camp__draw_world(Game *game)
                                 .y = tile->y_world + CAMP_TILE_SIZE_IN_PIXELS - 20
                             },
                             gray
+                        );
+
+                        DrawCircle(
+                            tile->x_world + CAMP_TILE_SIZE_IN_PIXELS / 2,
+                            tile->y_world + CAMP_TILE_SIZE_IN_PIXELS / 2,
+                            10,
+                            GRAY
+                        );
+                    } else
+                    {
+                        DrawCircle(
+                            tile->x_world + CAMP_TILE_SIZE_IN_PIXELS / 2,
+                            tile->y_world + CAMP_TILE_SIZE_IN_PIXELS / 2,
+                            10,
+                            SKYBLUE
                         );
                     }
 

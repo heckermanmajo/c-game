@@ -7,9 +7,13 @@
 
 #include "../types.h"
 
-
 void camp__user_input_controller(Game *game)
 {
+    if (game->campaign_state.overlay_mode != CAMP_OVERLAY_NONE)
+    {
+        return;
+    }
+
     // move player armies with arrow keys
     // todo: add more comments
     if (game->campaign_state.currently_selected_tile && game->campaign_state.currently_selected_tile->owner_faction)
@@ -123,7 +127,7 @@ void camp__user_input_controller(Game *game)
     }
 
     // select tile on camp map via mouse
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && game->campaign_state.overlay_mode == CAMP_OVERLAY_NONE)
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         Vector2 mouse = GetMousePosition();
         mouse = GetScreenToWorld2D(mouse, game->campaign_state.camera);
@@ -165,6 +169,12 @@ void camp__user_input_controller(Game *game)
                 game->campaign_state.camp_tiles_around = result;
             }
         }
+    }
+
+    // progress to next round
+    if (IsKeyPressed(KEY_ENTER))
+    {
+        camp__progress_to_next_round(game);
     }
 }
 

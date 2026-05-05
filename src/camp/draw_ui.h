@@ -7,6 +7,7 @@
 
 #include <assert.h>
 
+#include "progress_to_next_round.h"
 #include "../types.h"
 
 void camp__draw_ui(Game *game)
@@ -14,17 +15,48 @@ void camp__draw_ui(Game *game)
     // header at the top
     {
         DrawRectangle(0, 0, GetScreenWidth(), 50, GRAY);
-        DrawText("Next Round (1234)", 10, 10, 30, RED); // todo: add hover mode
 
-        DrawText("Kraft: 123", 400, 10, 30, BLUE);
+        // progress round button
+        {
+            const char *text = TextFormat(
+                "Next Round (%d)",
+                game->campaign_state.current_round
+            );
+            const int font_size = 30;
+            if (text_button(text, 10, 10, font_size, PURPLE))
+            {
+                camp__progress_to_next_round(game);
+            }
+        }
+
+        DrawText(
+            TextFormat(
+                "Kraft: %d",
+                game->campaign_state.factions[PLAYER_FACTION_INDEX].kraft
+            ),
+            400,
+            10,
+            30,
+            BLUE
+        );
+
+        DrawText(
+            TextFormat(
+                "Kraft(enemy): %d",
+                game->campaign_state.factions[1].kraft
+            ),
+            700,
+            10,
+            30,
+            RED
+        );
     }
 
 
     // draw some ui if there is a tile selected
     if (game->campaign_state.currently_selected_tile != NULL)
     {
-        Color c = WHITE;
-        c.a = 200;
+        Color c = GRAY;
         const int side_bar_width_in_pixels = 400;
         const int start_x_of_side_bar = GetScreenWidth() - side_bar_width_in_pixels;
         DrawRectangle(
@@ -60,7 +92,7 @@ void camp__draw_ui(Game *game)
         );
 
         {
-            char *type = "GRAS";
+            char *type = "UNKNOWN";
             switch (game->campaign_state.currently_selected_tile->terrain_type)
             {
                 case CAMP_TERRAIN_TYPE_GRASS: type = "Grassland";
@@ -72,6 +104,8 @@ void camp__draw_ui(Game *game)
                 case CAMP_TERRAIN_TYPE_RESOURCE: type = "Resource";
                     break;
                 case CAMP_TERRAIN_TYPE_WATER: type = "Water";
+                    break;
+                case CAMP_TERRAIN_TYPE_LOGISTICS_HUB: type = "Logistics Hub";
                     break;
             }
             y += 30;
@@ -115,17 +149,88 @@ void camp__draw_ui(Game *game)
             );
         }
 
-        if (game->campaign_state.currently_selected_tile->terrain_type == CAMP_TERRAIN_TYPE_CITY)
+        if (game->campaign_state.currently_selected_tile->owner_faction == &game->campaign_state.factions[
+                PLAYER_FACTION_INDEX])
         {
-            // todo: add hover effect....
-            y += 30;
-            DrawText(
-                "Click to create army: - 10 Kraft ",
-                start_x_of_side_bar + 10,
-                y,
-                20,
-                RED
-            );
+            if (game->campaign_state.currently_selected_tile->terrain_type == CAMP_TERRAIN_TYPE_CITY)
+            {
+                y += 30;
+                const int font_size = 20;
+                const int x = start_x_of_side_bar + 10;
+                const int price = 10;
+                if (game->campaign_state.currently_selected_tile->army.alive)
+                {
+                    if (text_button(TextFormat("Click to enforce army: - %d Kraft ", price), x, y, font_size, PURPLE))
+                    {
+                        if (game->campaign_state.factions[PLAYER_FACTION_INDEX].kraft > 10)
+                        {
+                            game->campaign_state.currently_selected_tile->army.kraft += 10;
+                            game->campaign_state.currently_selected_tile->army.can_move_this_turn = 0;
+                            game->campaign_state.factions[PLAYER_FACTION_INDEX].kraft -= 10;
+                        }
+                    }
+                } else
+                {
+                    if (text_button(TextFormat("Click to CREATE army: - %d Kraft ", price), x, y, font_size, PURPLE))
+                    {
+                        if (game->campaign_state.factions[PLAYER_FACTION_INDEX].kraft > 10)
+                        {
+                            game->campaign_state.factions[PLAYER_FACTION_INDEX].kraft -= 10;
+                            game->campaign_state.currently_selected_tile->army.kraft = 10;
+                            game->campaign_state.currently_selected_tile->army.alive = 1;
+                            game->campaign_state.currently_selected_tile->army.tile_i_am_on = game->campaign_state.
+                                    currently_selected_tile;
+                            game->campaign_state.currently_selected_tile->army.faction = &game->campaign_state.factions[
+                                PLAYER_FACTION_INDEX];
+                            game->campaign_state.currently_selected_tile->army.can_move_this_turn = 0;
+                        }
+                    }
+                }
+            }
+
+            if (game->campaign_state.currently_selected_tile->terrain_type == CAMP_TERRAIN_TYPE_LOGISTICS_HUB)
+            {
+                y += 30;
+                const int font_size = 20;
+                const int x = start_x_of_side_bar + 10;
+                const int price = 10;
+                if (game->campaign_state.currently_selected_tile->army.alive)
+                {
+                    if (text_button(TextFormat("Click to enforce army: - %d Kraft ", price), x, y, font_size, PURPLE))
+                    {
+                        if (game->campaign_state.factions[PLAYER_FACTION_INDEX].kraft > 10)
+                        {
+                            game->campaign_state.currently_selected_tile->army.kraft += 10;
+                            game->campaign_state.currently_selected_tile->army.can_move_this_turn = 0;
+                            game->campaign_state.factions[PLAYER_FACTION_INDEX].kraft -= 10;
+                        }
+                    }
+                }
+            }
+
+            if (game->campaign_state.currently_selected_tile->terrain_type == CAMP_TERRAIN_TYPE_GRASS)
+            {
+                y += 30;
+                const int font_size = 20;
+                const int x = start_x_of_side_bar + 10;
+                const int price = 30;
+                if (
+                    game->campaign_state.currently_selected_tile->army.alive
+                    && game->campaign_state.currently_selected_tile->army.can_move_this_turn == 1
+                )
+                {
+                    if (text_button(TextFormat("Click to build Logistics hub: - %d Kraft ", price), x, y, font_size,
+                                    PURPLE))
+                    {
+                        if (game->campaign_state.factions[PLAYER_FACTION_INDEX].kraft > price)
+                        {
+                            game->campaign_state.currently_selected_tile->army.can_move_this_turn = 0;
+                            game->campaign_state.currently_selected_tile->terrain_type =
+                                    CAMP_TERRAIN_TYPE_LOGISTICS_HUB;
+                        }
+                    }
+                }
+            }
         }
     } // end drawing ui
 }

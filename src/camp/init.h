@@ -16,21 +16,23 @@ void camp__init(Game *game)
         game->campaign_state.factions[0].is_player = 1;
         game->campaign_state.factions[0].name = "Player Faction";
         game->campaign_state.factions[0].color = BLUE;
+        game->campaign_state.factions[0].kraft = 0;
 
         game->campaign_state.factions[1].is_player = 0;
         game->campaign_state.factions[1].name = "Enemy Faction";
         game->campaign_state.factions[1].color = RED;
+        game->campaign_state.factions[1].kraft = 0;
 
         game->campaign_state.merge_overlay_state.from = NULL;
         game->campaign_state.merge_overlay_state.to = NULL;
         game->campaign_state.battle_overlay_state.from = NULL;
         game->campaign_state.battle_overlay_state.to = NULL;
-        game->campaign_state.overlay_mode = CAMP_OVERLAY_BATTLE;
+        game->campaign_state.overlay_mode = CAMP_OVERLAY_NONE;
 
         game->is_running = true;
         game->campaign_state.currently_selected_tile = NULL;
         game->campaign_state.camp_tiles_around.success = 0;
-        game->campaign_state.debug_mode = DEBUG_MODE_GET_CAMP_TILES_AROUND;
+        game->campaign_state.debug_mode = DEBUG_MODE_NONE;
     }
 
     // init campaign map
@@ -51,30 +53,58 @@ void camp__init(Game *game)
                 tile->army.tile_i_am_on = NULL;
                 {
                     const int rand = GetRandomValue(0, 100);
-                    if (rand > 90)
+                    if (rand > 95)
                     {
                         tile->terrain_type = CAMP_TERRAIN_TYPE_CITY;
                         tile->kraft_per_round = 5;
-                    }
-                    else if (rand > 80)
+                        if (GetRandomValue(0, 1) == 0)
+                        {
+                            tile->owner_faction = &(game->campaign_state.factions[0]);
+                        } else
+                        {
+                            tile->owner_faction = &(game->campaign_state.factions[1]);
+                        }
+                    } else if (rand > 90)
                     {
                         tile->terrain_type = CAMP_TERRAIN_TYPE_RESOURCE;
                         tile->kraft_per_round = 10;
-                    }
-                    else if (rand > 70)
+                        if (GetRandomValue(0, 1) == 0)
+                        {
+                            tile->owner_faction = &(game->campaign_state.factions[0]);
+                        } else
+                        {
+                            tile->owner_faction = &(game->campaign_state.factions[1]);
+                        }
+                    } else if (rand > 85)
                     {
                         tile->terrain_type = CAMP_TERRAIN_TYPE_MOUNTAIN;
                         tile->kraft_per_round = 0;
-                    }
-                    else if (rand > 60)
+                    } else if (rand > 80)
                     {
                         tile->terrain_type = CAMP_TERRAIN_TYPE_WATER;
                         tile->kraft_per_round = 0;
-                    }
-                    else
+                    } else if (rand > 80)
+                    {
+                        tile->terrain_type = CAMP_TERRAIN_TYPE_LOGISTICS_HUB;
+                        tile->kraft_per_round = 2;
+                        if (GetRandomValue(0, 1) == 0)
+                        {
+                            tile->owner_faction = &(game->campaign_state.factions[0]);
+                        } else
+                        {
+                            tile->owner_faction = &(game->campaign_state.factions[1]);
+                        }
+                    } else
                     {
                         tile->terrain_type = CAMP_TERRAIN_TYPE_GRASS;
                         tile->kraft_per_round = 0;
+                        if (GetRandomValue(0, 1) == 0)
+                        {
+                            tile->owner_faction = &(game->campaign_state.factions[0]);
+                        } else
+                        {
+                            tile->owner_faction = &(game->campaign_state.factions[1]);
+                        }
                     }
                 }
                 if (
@@ -108,7 +138,7 @@ void camp__init(Game *game)
     {
         game->campaign_state.camera.offset
                 = (Vector2){
-                    .x = ((float) GetScreenWidth() ) / 2,
+                    .x = ((float) GetScreenWidth()) / 2,
                     .y = ((float) GetScreenHeight()) / 2,
                 };
         game->campaign_state.camera.target
@@ -119,6 +149,5 @@ void camp__init(Game *game)
         game->campaign_state.camera.rotation = 0.0f;
         game->campaign_state.camera.zoom = 1.0f;
     }
-
 }
 #endif //CG_INIT_H
