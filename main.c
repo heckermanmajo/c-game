@@ -8,17 +8,9 @@ AI behaviour
 - add log file to camp so we can file log into camp file
 - ui should consume the mouse if clicked on
 
-- ZOOM (zoom modes, different displays, zoom-move-factor)
-- army movement
-- AI Behavior
-- army creation (cities)
-- kraft getting logic
-- get around tiles function
-- UI header bar (kraft, round)
 - after battle popup view with details, before and after
 - null checks, documentation, safety checks
 - can move this round indicator
-- debugging code auslagern in eine eigen datei; debug prints
  */
 
 /**
@@ -66,6 +58,7 @@ int main()
     SetTargetFPS(45);
 
     Game game = {0};
+    game.is_running = true;
 
     camp__init(&game);
 

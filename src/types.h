@@ -115,6 +115,8 @@ struct CampaignState
         CampTile* to;
     } battle_overlay_state;
 
+    FILE* log_file;
+
 };
 
 struct Game
@@ -122,5 +124,10 @@ struct Game
     int is_running;
     CampaignState campaign_state;
 };
+
+void LOG(const CampaignState* campaign_state, const char* text)
+{
+    fprintf(campaign_state->log_file, text);
+}
 
 #endif //CG_TYPES_H

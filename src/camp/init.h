@@ -11,6 +11,30 @@
 
 void camp__init(Game *game)
 {
+
+    // init log files
+    {
+        game->campaign_state.log_file = fopen("../camp_file.log", "w");
+        if (game->campaign_state.log_file == NULL)
+        {
+            printf("cannot open file for logs");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // set default stuff
+    {
+        game->campaign_state.merge_overlay_state.from = NULL;
+        game->campaign_state.merge_overlay_state.to = NULL;
+        game->campaign_state.battle_overlay_state.from = NULL;
+        game->campaign_state.battle_overlay_state.to = NULL;
+        game->campaign_state.overlay_mode = CAMP_OVERLAY_NONE;
+
+        game->campaign_state.currently_selected_tile = NULL;
+        game->campaign_state.camp_tiles_around.success = 0;
+        game->campaign_state.debug_mode = DEBUG_MODE_NONE;
+    }
+
     // init factions
     {
         game->campaign_state.factions[0].is_player = 1;
@@ -22,17 +46,7 @@ void camp__init(Game *game)
         game->campaign_state.factions[1].name = "Enemy Faction";
         game->campaign_state.factions[1].color = RED;
         game->campaign_state.factions[1].kraft = 0;
-
-        game->campaign_state.merge_overlay_state.from = NULL;
-        game->campaign_state.merge_overlay_state.to = NULL;
-        game->campaign_state.battle_overlay_state.from = NULL;
-        game->campaign_state.battle_overlay_state.to = NULL;
-        game->campaign_state.overlay_mode = CAMP_OVERLAY_NONE;
-
-        game->is_running = true;
-        game->campaign_state.currently_selected_tile = NULL;
-        game->campaign_state.camp_tiles_around.success = 0;
-        game->campaign_state.debug_mode = DEBUG_MODE_NONE;
+        LOG(&game->campaign_state, "Initialized factions");
     }
 
     // init campaign map
@@ -83,7 +97,7 @@ void camp__init(Game *game)
                     {
                         tile->terrain_type = CAMP_TERRAIN_TYPE_WATER;
                         tile->kraft_per_round = 0;
-                    } else if (rand > 80)
+                    } else if (rand > 80) // currently disabled
                     {
                         tile->terrain_type = CAMP_TERRAIN_TYPE_LOGISTICS_HUB;
                         tile->kraft_per_round = 2;
