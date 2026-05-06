@@ -2,10 +2,8 @@
  TODO-LIST:
 
 
-AI behaviour
+- AI behaviour
 
-- move army and trigger correct overlay
-- add log file to camp so we can file log into camp file
 - ui should consume the mouse if clicked on
 
 - after battle popup view with details, before and after
@@ -28,7 +26,7 @@ AI behaviour
 #include "src/camp/init.h"
 #include "src/camp/move_camera.h"
 #include "src/camp/draw_world.h"
-#include "src/camp/camp__ai_behaviour.h"
+#include "src/camp/camp_ai_behaviour.h"
 #include "src/camp/debug_printing.h"
 #include "src/camp/draw_ui.h"
 #include "src/camp/draw_overlay.h"

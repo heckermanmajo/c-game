@@ -3,3 +3,4 @@ CMakeLists.txt
 game
 /.idea
 /.vscode
+**/*.log

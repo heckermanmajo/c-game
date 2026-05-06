@@ -14,7 +14,7 @@ void camp__init(Game *game)
 
     // init log files
     {
-        game->campaign_state.log_file = fopen("../camp_file.log", "w");
+        game->campaign_state.log_file = fopen("camp_file.log", "w");
         if (game->campaign_state.log_file == NULL)
         {
             printf("cannot open file for logs");
@@ -46,7 +46,7 @@ void camp__init(Game *game)
         game->campaign_state.factions[1].name = "Enemy Faction";
         game->campaign_state.factions[1].color = RED;
         game->campaign_state.factions[1].kraft = 0;
-        LOG(&game->campaign_state, "Initialized factions");
+        LOG(&game->campaign_state, TextFormat("%s | %s(...) (%d): Initialized factions",__FILE__, __func__, __LINE__));
     }
 
     // init campaign map

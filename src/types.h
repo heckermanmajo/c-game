@@ -127,7 +127,7 @@ struct Game
 
 void LOG(const CampaignState* campaign_state, const char* text)
 {
-    fprintf(campaign_state->log_file, text);
+    fwrite(text, strlen(text), 1, campaign_state->log_file);
 }
 
 #endif //CG_TYPES_H
