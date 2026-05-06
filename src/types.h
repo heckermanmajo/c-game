@@ -68,6 +68,8 @@ struct Faction
     int is_player;
     Color color;
     int kraft;
+    float next_ai_faction_move_timer;
+    int moves_per_ai_faction_counter;
 };
 
 struct Army

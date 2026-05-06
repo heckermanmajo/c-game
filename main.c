@@ -1,10 +1,8 @@
 /*
  TODO-LIST:
 
- Logistik-System für kraft investment basierend auf cities
- Das macht das AI-erstellen sehr viel einfacher.
- Zudem wenn die ai logistik center mit armeen bauen kann.
 
+AI behaviour
 
 - move army and trigger correct overlay
 - add log file to camp so we can file log into camp file
@@ -38,7 +36,7 @@
 #include "src/camp/init.h"
 #include "src/camp/move_camera.h"
 #include "src/camp/draw_world.h"
-#include "src/camp/game_logic.h"
+#include "src/camp/camp__ai_behaviour.h"
 #include "src/camp/debug_printing.h"
 #include "src/camp/draw_ui.h"
 #include "src/camp/draw_overlay.h"
@@ -82,7 +80,7 @@ int main()
 
         camp__user_input_controller(&game);
 
-        camp__game_logic(&game);
+        camp__ai_behaviour(&game);
 
         BeginDrawing();
         ClearBackground(BLACK);
@@ -99,7 +97,6 @@ int main()
         camp__debug_print(&game);
 
         EndDrawing();
-
     } // end main game loop
 
     // cleanup
