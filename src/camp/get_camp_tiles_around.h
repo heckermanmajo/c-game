@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "../types.h"
+#include "../types.h"
 
 typedef struct CampTilesAroundResult CampTilesAroundResult;
 typedef struct CampTilesAroundFilter CampTilesAroundFilter;
@@ -36,7 +37,7 @@ struct CampTilesAroundResult
      * The array of pointers to the tiles; Pointers to them, so you can use
      * those pointers to modify the real data.
      */
-    struct CampTile** malloced_tiles;
+    struct CampTile **malloced_tiles;
 };
 
 /**
@@ -56,6 +57,8 @@ struct CampTilesAroundFilter
     int only_top;
     int only_bottom;
 
+    int only_passable;
+
     /**
      * Determines how big the square around the start tile to return.
      * 1 == 3x3
@@ -71,7 +74,6 @@ struct CampTilesAroundFilter
      */
     unsigned int depth;
 };
-
 
 
 /**
@@ -121,7 +123,6 @@ CampTilesAroundResult get_camp_tiles_around(
     const CampTilesAroundFilter filter
 )
 {
-
     CampTilesAroundResult result;
     result.success = 0;
     result.amount = 0;
@@ -192,14 +193,14 @@ CampTilesAroundResult get_camp_tiles_around(
             case 6: max_amount = 13 * 13;
                 break;
         }
-        max_amount --; // since we don't want to include the start tile
+        max_amount--; // since we don't want to include the start tile
     }
 
     // allocate needed memory
     // might allocate more memory than needed, since we might apply other filters
     // but it is fine, since the amount of memory is very small in all cases
     {
-        const size_t bytes_to_allocate = sizeof(CampTile *) * (size_t)max_amount;
+        const size_t bytes_to_allocate = sizeof(CampTile *) * (size_t) max_amount;
         result.malloced_tiles = malloc(bytes_to_allocate);
         if (!result.malloced_tiles)
         {
@@ -223,13 +224,13 @@ CampTilesAroundResult get_camp_tiles_around(
         for (int x = start_index_x; x < end_index_x; x++)
         {
             if (x < 0) continue;
-            if (x > CAMP_MAP_SIZE-1) continue;
+            if (x > CAMP_MAP_SIZE - 1) continue;
             for (int y = start_index_y; y < end_index_y; y++)
             {
                 if (y < 0) continue;
-                if (y > CAMP_MAP_SIZE-1) continue;
+                if (y > CAMP_MAP_SIZE - 1) continue;
                 const int index = x * CAMP_MAP_SIZE + y;
-                CampTile* tile = &game->campaign_state.tiles[index];
+                CampTile *tile = &game->campaign_state.tiles[index];
 
                 // ignore the start tile itself
                 if (x == start_tile->x_index && y == start_tile->y_index) continue;
@@ -243,7 +244,7 @@ CampTilesAroundResult get_camp_tiles_around(
                     {
                         continue;
                     }
-                    if (tile->y_index > start_tile->y_index )
+                    if (tile->y_index > start_tile->y_index)
                     {
                         continue;
                     }
@@ -255,7 +256,7 @@ CampTilesAroundResult get_camp_tiles_around(
                     {
                         continue;
                     }
-                    if (tile->y_index < start_tile->y_index )
+                    if (tile->y_index < start_tile->y_index)
                     {
                         continue;
                     }
@@ -267,7 +268,7 @@ CampTilesAroundResult get_camp_tiles_around(
                     {
                         continue;
                     }
-                    if (tile->x_index > start_tile->x_index )
+                    if (tile->x_index > start_tile->x_index)
                     {
                         continue;
                     }
@@ -279,7 +280,18 @@ CampTilesAroundResult get_camp_tiles_around(
                     {
                         continue;
                     }
-                    if (tile->x_index < start_tile->x_index )
+                    if (tile->x_index < start_tile->x_index)
+                    {
+                        continue;
+                    }
+                }
+
+                if (filter.only_passable == 1)
+                {
+                    if (
+                        tile->terrain_type == CAMP_TERRAIN_TYPE_WATER
+                        || tile->terrain_type == CAMP_TERRAIN_TYPE_MOUNTAIN
+                    )
                     {
                         continue;
                     }
@@ -300,7 +312,6 @@ CampTilesAroundResult get_camp_tiles_around(
 
 void camp_tiles_around_result_destroy(CampTilesAroundResult *result)
 {
-
     // todo: we might want to add logs here -> if we pass in a null or the emory is already freed
 
     if (!result)

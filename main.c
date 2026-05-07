@@ -14,6 +14,14 @@
 /**
  * PARTIAL WAR
  *
+ * Game 1: Campaign map in simple, itch io
+ * Game 2: Campaign map in nice, itch io
+ * Game 3: Campaign map in nice with simple battles
+ * Game 4: Campaign map in nice with nice battles
+ * Game 5: same in multiple mods; landsknecht, modern, future, Medival
+ * Game 6: Heros
+ * Game 7: building, resources; EE battle-modes and real time battles mixed; mages
+ *
  */
 
 #include <stdio.h>

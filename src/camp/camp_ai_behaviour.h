@@ -43,12 +43,95 @@ void camp__ai_behaviour(Game *game)
                     {
                         if (tile->army.can_move_this_turn == 1)
                         {
-                            // todo: determine if can need to move
-                            // determine what armies to move and to where
-                            // high value targets: cities; dan resources, dann unbestezte logistik zentren
-                            // todo: get all tiles around tile
-                            // todo: get all 2, 3 tiles around tile
-                            // TODO: IF ONE WAS MOVED -> reset the timer and then continue
+                            // used to determine where to go
+                            CampTilesAroundResult result_with_malloc = get_camp_tiles_around(
+                                game,
+                                tile,
+                                (CampTilesAroundFilter){
+                                    .depth = 1,
+                                    .only_passable = 1
+                                }
+                            );
+
+                            // used to determine what to do over all
+                            CampTilesAroundResult result_with_malloc_view = get_camp_tiles_around(
+                                game,
+                                tile,
+                                (CampTilesAroundFilter){
+                                    .depth = 3,
+                                    .only_passable = 1
+                                }
+                            );
+
+                            /**
+                             * If there is another tile in range, that would make sense to move to, since it
+                             * is neutral or better to defend.
+                             */
+                            CampTile *target_tile_move_potential = NULL;
+
+                            /**
+                             * If there is an enemy to attack nearby.
+                             */
+                            CampTile *target_tile_attack_potential = NULL;
+
+                            /**
+                             * If there is another of my armies near by that would make sense to merge
+                             * with.
+                             */
+                            CampTile *target_tile_merge_potential = NULL;
+
+                            /**
+                             * Enemy armies in the view fields.
+                             */
+                            int enemy_armies_in_view = 0;
+
+                            /**
+                             * Resources in view fields.
+                             */
+                            int resources_in_view = 0;
+                            int cities_in_view = 0;
+                            /**
+                              * 
+                              */
+                            int valuable_resources_and_cities_not_owned_in_view = 0;
+
+                            for (
+                                int view_result_tile_index = 0;
+                                view_result_tile_index < result_with_malloc_view.amount;
+                                view_result_tile_index++
+                            )
+                            {
+                                const CampTile *view_tile = result_with_malloc.malloced_tiles[view_result_tile_index];
+                            }
+
+                            for (
+                                int around_result_tile_index = 0;
+                                around_result_tile_index < result_with_malloc.amount;
+                                around_result_tile_index++
+                            )
+                            {
+                                const CampTile *maybe_move_to_tile = result_with_malloc.malloced_tiles[
+                                    around_result_tile_index];
+
+                                if (tile->owner_faction != maybe_move_to_tile->owner_faction)
+                                {
+                                    if (maybe_move_to_tile->owner_faction == NULL)
+                                    {
+                                    } else
+                                    {
+                                    }
+                                }
+                            }
+
+                        end_army_movement:
+                            camp_tiles_around_result_destroy(&result_with_malloc);
+                            camp_tiles_around_result_destroy(&result_with_malloc_view);
+
+                            // NOTE: if we don't decide to move this arm, we still need to set its can move this turn to 0
+                            if (tile->army.can_move_this_turn == 1)
+                            {
+                                tile->army.can_move_this_turn = 0;
+                            }
                         }
                     }
                 }
