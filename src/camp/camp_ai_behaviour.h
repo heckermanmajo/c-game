@@ -89,9 +89,12 @@ void camp__ai_behaviour(Game *game)
                              * Resources in view fields.
                              */
                             int resources_in_view = 0;
+                            /**
+                             * Cities in view.
+                             */
                             int cities_in_view = 0;
                             /**
-                              * 
+                              *
                               */
                             int valuable_resources_and_cities_not_owned_in_view = 0;
 
@@ -102,6 +105,26 @@ void camp__ai_behaviour(Game *game)
                             )
                             {
                                 const CampTile *view_tile = result_with_malloc.malloced_tiles[view_result_tile_index];
+
+                                if (
+                                    view_tile->terrain_type == CAMP_TERRAIN_TYPE_MOUNTAIN
+                                    || view_tile->terrain_type == CAMP_TERRAIN_TYPE_WATER
+                                )
+                                {
+                                    continue;
+                                }
+                                if (view_tile->terrain_type == CAMP_TERRAIN_TYPE_CITY)
+                                {
+                                    cities_in_view++;
+                                }
+                                if (view_tile->terrain_type == CAMP_TERRAIN_TYPE_RESOURCE)
+                                {
+                                    resources_in_view++;
+                                }
+                                if ( view_tile->army.alive && view_tile->army.faction != faction)
+                                {
+                                    enemy_armies_in_view++;
+                                }
                             }
 
                             for (
@@ -117,8 +140,10 @@ void camp__ai_behaviour(Game *game)
                                 {
                                     if (maybe_move_to_tile->owner_faction == NULL)
                                     {
+                                        // TODO
                                     } else
                                     {
+                                        // TODO
                                     }
                                 }
                             }
