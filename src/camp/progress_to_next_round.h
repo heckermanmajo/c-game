@@ -25,6 +25,8 @@ void camp__progress_to_next_round(Game* game)
         faction->next_ai_faction_move_timer = 0.0f;
     }
 
+
+
 }
 
 #endif

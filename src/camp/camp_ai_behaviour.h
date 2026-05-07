@@ -52,6 +52,11 @@ void camp__ai_behaviour(Game *game)
                                     .only_passable = 1
                                 }
                             );
+                            if (result_with_malloc.success == 0)
+                            {
+                                printf(result_with_malloc.reason);
+                                exit(EXIT_FAILURE);
+                            }
 
                             // used to determine what to do over all
                             CampTilesAroundResult result_with_malloc_view = get_camp_tiles_around(
@@ -62,7 +67,13 @@ void camp__ai_behaviour(Game *game)
                                     .only_passable = 1
                                 }
                             );
+                            if (result_with_malloc_view.success == 0)
+                            {
+                                printf(result_with_malloc_view.reason);
+                                exit(EXIT_FAILURE);
+                            }
 
+                            printf("HELLOP11--"); fflush(stdout);
                             /**
                              * If there is another tile in range, that would make sense to move to, since it
                              * is neutral or better to defend.
@@ -100,11 +111,12 @@ void camp__ai_behaviour(Game *game)
 
                             for (
                                 int view_result_tile_index = 0;
-                                view_result_tile_index < result_with_malloc_view.amount;
+                                view_result_tile_index <= result_with_malloc_view.amount-1;
                                 view_result_tile_index++
                             )
                             {
-                                const CampTile *view_tile = result_with_malloc.malloced_tiles[view_result_tile_index];
+                                printf("LOLOLOLO; %d\n", view_result_tile_index); fflush(stdout);
+                                const CampTile *view_tile = result_with_malloc_view.malloced_tiles[view_result_tile_index];
 
                                 if (
                                     view_tile->terrain_type == CAMP_TERRAIN_TYPE_MOUNTAIN
@@ -133,7 +145,8 @@ void camp__ai_behaviour(Game *game)
                                 around_result_tile_index++
                             )
                             {
-                                const CampTile *maybe_move_to_tile = result_with_malloc.malloced_tiles[
+                                printf("FOOOP; %d\n", around_result_tile_index); fflush(stdout);
+                                /*const CampTile *maybe_move_to_tile = result_with_malloc.malloced_tiles[
                                     around_result_tile_index];
 
                                 if (tile->owner_faction != maybe_move_to_tile->owner_faction)
@@ -145,12 +158,17 @@ void camp__ai_behaviour(Game *game)
                                     {
                                         // TODO
                                     }
-                                }
+                                }*/
                             }
 
+                            printf("FOOOPjjjjjjjj;"); fflush(stdout);
+
                         end_army_movement:
+                            printf("tttttt"); fflush(stdout);
                             camp_tiles_around_result_destroy(&result_with_malloc);
+                            printf("hhhhhhh"); fflush(stdout);
                             camp_tiles_around_result_destroy(&result_with_malloc_view);
+
 
                             // NOTE: if we don't decide to move this arm, we still need to set its can move this turn to 0
                             if (tile->army.can_move_this_turn == 1)
@@ -162,7 +180,7 @@ void camp__ai_behaviour(Game *game)
                 }
             }
         }
-
+        printf("HELLOP2"); fflush(stdout);
         // create army/increae army
         // todo: check if we have enough kraft, else jump this part
         {
@@ -183,6 +201,8 @@ void camp__ai_behaviour(Game *game)
                 }
             }
         }
+
+        printf("HELLOP3"); fflush(stdout);
 
         faction->moves_per_ai_faction_counter++;
         if (faction->moves_per_ai_faction_counter >= MAX_MOVES_PER_AI_FACTION)
