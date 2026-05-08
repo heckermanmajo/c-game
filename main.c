@@ -47,7 +47,6 @@
 #include "src/camp/move_army.h"
 #include "src/camp/progress_to_next_round.h"
 #include "src/camp/get_distance_between_tiles.h"
-#undef IMPLEMENTATION
 
 
 int main()
