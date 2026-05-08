@@ -5,20 +5,18 @@
 #ifndef CG_PROGRESS_TO_NEXT_ROUND_H
 #define CG_PROGRESS_TO_NEXT_ROUND_H
 
-void camp__progress_to_next_round(Game* game);
+void camp__progress_to_next_round(Game *game);
 
 #endif //CG_PROGRESS_TO_NEXT_ROUND_H
 
 #ifndef IMPLEMENTATION
 
-void camp__progress_to_next_round(Game* game)
-{
+void camp__progress_to_next_round(Game *game) {
     game->campaign_state.current_round++;
 
     game->campaign_state.current_active_faction_index = PLAYER_FACTION_INDEX + 1;
 
-    for (int faction_index = 0; faction_index < TOTAL_CAMP_FACTIONS; faction_index++)
-    {
+    for (int faction_index = 0; faction_index < TOTAL_CAMP_FACTIONS; faction_index++) {
         Faction *faction = &(game->campaign_state.factions[faction_index]);
         // these values are needed ibn the ai behaviour logic
         faction->moves_per_ai_faction_counter = 0;
@@ -26,7 +24,26 @@ void camp__progress_to_next_round(Game* game)
     }
 
 
+    for (int index = 0; index < CAMP_MAP_IN_TILES; index++) {
+        CampTile *tile = &(game->campaign_state.tiles[index]);
+        if (tile->owner_faction == NULL) {
+            continue;
+        }
 
+        switch (tile->terrain_type) {
+            case CAMP_TERRAIN_TYPE_CITY: tile->owner_faction->kraft += 5;
+                break;
+            case CAMP_TERRAIN_TYPE_RESOURCE: tile->owner_faction->kraft += 10;
+                break;
+            case CAMP_TERRAIN_TYPE_GRASS: tile->owner_faction->kraft += 1;
+                break;
+            default: /* pass */ break;
+        }
+
+        if (tile->army.alive) {
+            tile->army.can_move_this_turn = 1;
+        }
+    }
 }
 
 #endif

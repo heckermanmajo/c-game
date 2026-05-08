@@ -26,8 +26,8 @@ void camp__user_input_controller(Game *game)
                     game,
                     game->campaign_state.currently_selected_tile,
                     (CampTilesAroundFilter){
-                        .depth = 1,
-                        .only_top = 1
+                        .only_top = 1,
+                        .depth = 1
                     }
                 );
 
@@ -52,8 +52,8 @@ void camp__user_input_controller(Game *game)
                     game,
                     game->campaign_state.currently_selected_tile,
                     (CampTilesAroundFilter){
-                        .depth = 1,
-                        .only_bottom = 1
+                        .only_bottom = 1,
+                        .depth = 1
                     }
                 );
 

@@ -213,30 +213,6 @@ void camp__ai_behaviour(Game *game)
             {
                 game->campaign_state.current_active_faction_index = PLAYER_FACTION_INDEX;
 
-                for (int index = 0; index < CAMP_MAP_IN_TILES; index++)
-                {
-                    CampTile *tile = &(game->campaign_state.tiles[index]);
-                    if (tile->owner_faction == NULL)
-                    {
-                        continue;
-                    }
-
-                    switch (tile->terrain_type)
-                    {
-                        case CAMP_TERRAIN_TYPE_CITY: tile->owner_faction->kraft += 5;
-                            break;
-                        case CAMP_TERRAIN_TYPE_RESOURCE: tile->owner_faction->kraft += 10;
-                            break;
-                        case CAMP_TERRAIN_TYPE_GRASS: tile->owner_faction->kraft += 1;
-                            break;
-                        default: /* pass */ break;
-                    }
-
-                    if (tile->army.alive)
-                    {
-                        tile->army.can_move_this_turn = 1;
-                    }
-                }
             }
         }
     }
